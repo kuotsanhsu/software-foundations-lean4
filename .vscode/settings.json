@@ -1,0 +1,34 @@
+{
+	"[markdown]": {
+		"editor.wordWrap": "wordWrapColumn",
+		"editor.wordWrapColumn": 80,
+		"editor.wrappingIndent": "none",
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll": true,
+		}
+	},
+	"[json][jsonc]": {
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll": true,
+		}
+	},
+	"search.exclude": {
+		"./build": true
+	},
+	"explorer.autoRevealExclude": {
+		"./build": true
+	},
+	"files.watcherExclude": {
+		"./build": true
+	}
+}
