@@ -1,5 +1,3 @@
-set_option autoImplicit false
-
 /-- The type of positive integeres. Equivalent to `{ n: Nat // n > 0 }`. -/
 structure PosInt where
   val: Nat

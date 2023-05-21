@@ -1,7 +1,12 @@
 import Lake
 open Lake DSL
 
-package «software-foundations»
+def leanArgs := #["-DautoImplicit=false"]
+
+package «software-foundations» {
+  moreServerArgs := leanArgs
+  moreLeanArgs := leanArgs
+}
 
 lean_lib SoftwareFoundations
 lean_lib BibTeX
