@@ -1,0 +1,25 @@
+# https://github.com/leanprover/theorem_proving_in_lean4/blob/master/book.toml
+# https://github.com/leanprover/lean4/blob/master/doc/book.toml
+# https://leanprover.github.io/lean4/doc/dev/mdbook.html
+
+[book]
+#authors = ["Benjamin Pierce"]
+#language = "en"
+#multilingual = false
+src = "."
+title = "Software Foundations"
+
+[build]
+build-dir = "../build/doc"
+
+[output.html]
+git-repository-url = "https://github.com/learningstud/software-foundations-lean4"
+additional-css = ["alectryon.css", "pygments.css"]
+additional-js = ["alectryon.js"]
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.playground.boring-prefixes]
+lean = "# "

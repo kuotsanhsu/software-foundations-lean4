@@ -65,408 +65,362 @@ Having defined a function, we should next check that it works on some examples. 
 
 #eval (next_weekday (next_weekday Saturday))
 
-
 /-!
 (We show Lean's responses in comments, but, if you have a computer handy, this would be an excellent moment to fire up the Lean interpreter under Visual Studio Code and try it for yourself. Load this file, `Basics.lean`, from the book's Lean sources, find the above example, submit it to Lean, and observe the result.)
 
 Second, we can record what we _expect_ the result to be in the form of a Lean example:
 -/
 
-example: (next_weekday (next_weekday Saturday)) = Tuesday :=
-  /- This declaration does two things: it makes an assertion (that the second weekday after `Saturday` is `Tuesday`), and it gives the assertion a name that can be used to refer to it later. Having made the assertion, we can also ask Lean to verify it like this:
--/
-  rfl
+/-- This declaration does two things: it makes an assertion (that the second weekday after `Saturday` is `Tuesday`), and it gives the assertion a name that can be used to refer to it later. Having made the assertion, we can also ask Lean to verify it like this: -/
+example: (next_weekday (next_weekday Saturday)) = Tuesday := rfl
+
+end Day
 
 /-!
 The details are not important just now, but essentially this can be read as "The assertion we've just made can be proved by observing that both sides of the equality evaluate to the same thing."
 
 Third, we can ask Lean to _extract_, from our `def`, a program in another, more conventional, programming language (OCaml, Scheme, or Haskell) with a high-performance compiler. This facility is very interesting, since it gives us a path from proved-correct algorithms written in Lean to efficient machine code. (Of course, we are trusting the correctness of the OCaml/Haskell/Scheme compiler, and of Lean's extraction facility itself, but this is still a big step forward from the way most software is developed today.) Indeed, this is one of the main uses for which Lean was developed. We'll come back to this topic in later chapters.
+
+### Homework Submission Guidelines
+
+If you are using _Software Foundations_ in a course, your instructor may use automatic scripts to help grade your homework assignments. In order for these scripts to work correctly (and give you that you get full credit for your work!), please be careful to follow these rules:
+- Do not change the names of exercises. Otherwise the grading scripts will be unable to find your solution.
+- Do not delete exercises. If you skip an exercise (e.g., because it is marked "optional," or because you can't solve it), it is OK to leave a partial proof in your `.lean` file; in this case, please make sure it ends with `sorry`).
+- It is fine to use additional definitions (of helper functions, useful lemmas, etc.) in your solutions. You can put these before the theorem you are asked to prove.
+- If you introduce a helper lemma that you end up being unable to prove, hence end it with `sorry`. That will help you get partial credit, in case you use that main theorem to solve a later exercise.
+
+You will also notice that each chapter (like `Basics.lean`) is accompanied by a _test script_ (`BasicsTest.lean`) that automatically calculates points for the finished homework problems in the chapter. These scripts are mostly for the auto-grading tools, but you may also want to use them to double-check that your file is well formatted before handing it in. In a terminal window, either type "`make BasicsTest.olean`" or do the following:
+```sh
+# FIXME
+coqc -Q . LF Basics.v
+coqc -Q . LF BasicsTest.v
+```
+
+See the end of this chapter for more information about how to interpret the output of test scripts.
+
+There is no need to hand in `BasicsTest.lean` itself (or `Preface.lean`).
+
+If your class is using the Canvas system to hand in assignments ...
+- If you submit multiple versions of the assignment, you may notice that they are given different names. This is fine: The most recent submission is the one that will be graded.
+- To hand in multiple files at the same time (if more than one chapter is assigned in the same week), you need to make a single submission with all the files at once using the button "Add another file" just above the comment box.
+
+### Booleans
+
+Following the pattern of the days of the week above, we can define the standard type `bool` of booleans, with members `true` and `false`.
+-/
+namespace Local
+
+inductive Bool : Type :=
+  | true
+  | false
+
+namespace Bool
+/-!
+Functions over booleans can be defined in the same way as above:
 -/
 
-end Day
-/-
-(* ================================================================= *)
-(** ** Homework Submission Guidelines *)
-
-(** If you are using _Software Foundations_ in a course, your
-    instructor may use automatic scripts to help grade your homework
-    assignments.  In order for these scripts to work correctly (and
-    give you that you get full credit for your work!), please be
-    careful to follow these rules:
-      - Do not change the names of exercises. Otherwise the grading
-        scripts will be unable to find your solution.
-      - Do not delete exercises.  If you skip an exercise (e.g.,
-        because it is marked "optional," or because you can't solve it),
-        it is OK to leave a partial proof in your [.v] file; in
-        this case, please make sure it ends with [Admitted] (not, for
-        example [Abort]).
-      - It is fine to use additional definitions (of helper functions,
-        useful lemmas, etc.) in your solutions.  You can put these
-        before the theorem you are asked to prove.
-      - If you introduce a helper lemma that you end up being unable
-        to prove, hence end it with [Admitted], then make sure to also
-        end the main theorem in which you use it with [Admitted], not
-        [Qed].  That will help you get partial credit, in case you
-        use that main theorem to solve a later exercise.
-
-    You will also notice that each chapter (like [Basics.v]) is
-    accompanied by a _test script_ ([BasicsTest.v]) that automatically
-    calculates points for the finished homework problems in the
-    chapter.  These scripts are mostly for the auto-grading
-    tools, but you may also want to use them to double-check
-    that your file is well formatted before handing it in.  In a
-    terminal window, either type "[make BasicsTest.vo]" or do the
-    following:
-
-       coqc -Q . LF Basics.v
-       coqc -Q . LF BasicsTest.v
-
-    See the end of this chapter for more information about how to interpret
-    the output of test scripts.
-
-    There is no need to hand in [BasicsTest.v] itself (or [Preface.v]).
-
-    If your class is using the Canvas system to hand in assignments...
-      - If you submit multiple versions of the assignment, you may
-        notice that they are given different names.  This is fine: The
-        most recent submission is the one that will be graded.
-      - To hand in multiple files at the same time (if more than one
-        chapter is assigned in the same week), you need to make a
-        single submission with all the files at once using the button
-        "Add another file" just above the comment box. *)
-
-(** The [Require Export] statement on the next line tells Lean to use
-    the [String] module from the standard library.  We'll use strings
-    ourselves in later chapters, but we need to [Require] it here so
-    that the grading scripts can use it for internal purposes. *)
-From Lean Require Export String.
-
-(* ================================================================= *)
-(** ** Booleans *)
-
-(** Following the pattern of the days of the week above, we can
-    define the standard type [bool] of booleans, with members [true]
-    and [false]. *)
-
-Inductive bool : Type :=
-  | true
-  | false.
-
-(** Functions over booleans can be defined in the same way as
-    above: *)
-
-Definition negb (b:bool) : bool :=
+def negb (b: Bool): Bool :=
   match b with
   | true => false
   | false => true
-  end.
 
-Definition andb (b1:bool) (b2:bool) : bool :=
-  match b1 with
-  | true => b2
+example: Bool → Bool
+  | true => false
+  | false => true
+
+def andb (b₁: Bool) (b₂: Bool): Bool :=
+  match b₁ with
+  | true => b₂
   | false => false
-  end.
 
-Definition orb (b1:bool) (b2:bool) : bool :=
-  match b1 with
+example (b₁ b₂: Bool): Bool :=
+  match b₁ with
+  | true => b₂
+  | false => false
+
+def orb (b₁: Bool) (b₂: Bool): Bool :=
+  match b₁ with
   | true => true
-  | false => b2
-  end.
+  | false => b₂
 
-(** (Although we are rolling our own booleans here for the sake
-    of building up everything from scratch, Lean does, of course,
-    provide a default implementation of the booleans, together with a
-    multitude of useful functions and lemmas.  Whenever possible,
-    we'll name our own definitions and theorems so that they exactly
-    coincide with the ones in the standard library.) *)
+example: Bool → Bool → Bool
+  | true, _ => true
+  | false, b₂ => b₂
 
-(** The last two of these illustrate Lean's syntax for
-    multi-argument function definitions.  The corresponding
-    multi-argument application syntax is illustrated by the following
-    "unit tests," which constitute a complete specification - a truth
-    table - for the [orb] function: *)
+/-
+(Although we are rolling our own booleans here for the sake of building up everything from scratch, Lean does, of course, provide a default implementation of the booleans, together with a multitude of useful functions and lemmas.  Whenever possible, we'll name our own definitions and theorems so that they exactly coincide with the ones in the standard library.)
 
-Example test_orb1:  (orb true  false) = true.
-Proof. simpl. reflexivity.  Qed.
-Example test_orb2:  (orb false false) = false.
-Proof. simpl. reflexivity.  Qed.
-Example test_orb3:  (orb false true)  = true.
-Proof. simpl. reflexivity.  Qed.
-Example test_orb4:  (orb true  true)  = true.
-Proof. simpl. reflexivity.  Qed.
+The last two of these illustrate Lean's syntax for multi-argument function definitions. The corresponding multi-argument application syntax is illustrated by the following "unit tests," which constitute a complete specification - a truth table - for the `orb` function:
+-/
 
-(** We can also introduce some familiar infix syntax for the
-    boolean operations we have just defined. The [Notation] command
-    defines a new symbolic notation for an existing definition. *)
+example: (orb true  false) = true  := rfl
+example: (orb false false) = false := rfl
+example: (orb false true ) = true  := rfl
+example: (orb true  true ) = true  := rfl
 
-Notation "x && y" := (andb x y).
-Notation "x || y" := (orb x y).
+/-!
+We can also introduce some familiar infix syntax for the boolean operations we have just defined. The `notation` command defines a new symbolic notation for an existing definition.
+-/
 
-Example test_orb5:  false || false || true = true.
-Proof. simpl. reflexivity. Qed.
+local notation x " && " y => andb x y
+local notation x " || " y => orb x y
 
-(** _A note on notation_: In [.v] files, we use square brackets
-    to delimit fragments of Lean code within comments; this convention,
-    also used by the [coqdoc] documentation tool, keeps them visually
-    separate from the surrounding text.  In the HTML version of the
-    files, these pieces of text appear in a [different font]. *)
+example: (false || false || true) = true := rfl
 
-(** These examples are also an opportunity to introduce one more small
-    feature of Lean's programming language: conditional expressions... *)
+/-!
+_A note on notation_: In `.lean` files, we use backticks to delimit fragments of Lean code within comments; this convention, also used by the `leanInk` documentation tool, keeps them visually separate from the surrounding text. In the HTML version of the files, these pieces of text appear in a `different font`.
 
-Definition negb' (b:bool) : bool :=
-  if b then false
-  else true.
+These examples are also an opportunity to introduce one more small feature of Lean's programming language: conditional expressions...
+-/
 
-Definition andb' (b1:bool) (b2:bool) : bool :=
-  if b1 then b2
-  else false.
+end Bool
 
-Definition orb' (b1:bool) (b2:bool) : bool :=
-  if b1 then true
-  else b2.
+end Local
 
-(** Lean's conditionals are exactly like those found in any other
-    language, with one small generalization.  Since the [bool] type is
-    not built in, Lean actually supports conditional expressions over
-    _any_ inductively defined type with exactly two clauses in its
-    definition.  The guard is considered true if it evaluates to the
-    "constructor" of the first clause of the [Inductive]
-    definition (which just happens to be called [true] in this case)
-    and false if it evaluates to the second. *)
+def negb' (b    : Bool): Bool := if b  then false else true
+def andb' (b₁ b₂: Bool): Bool := if b₁ then b₂    else false
+def orb'  (b₁ b₂: Bool): Bool := if b₁ then true  else b₂
 
-(** **** Exercise: 1 star, standard (nandb)
+/-!
+Lean's conditionals are exactly like those found in any other language, with one small generalization. Since the `Bool` type is not built in, Lean actually supports conditional expressions over any _decidable proposition_. Decidable propositions and the `Decidable` type class will be covered in later chapters (FIXME).
 
-    The command [Admitted] can be used as a placeholder for an
-    incomplete proof.  We use it in exercises to indicate the parts
-    that we're leaving for you - i.e., your job is to replace
-    [Admitted]s with real proofs.
+#### Exercise: 1 star, standard (nandb)
 
-    Remove "[Admitted.]" and complete the definition of the following
-    function; then make sure that the [Example] assertions below can
-    each be verified by Lean.  (I.e., fill in each proof, following the
-    model of the [orb] tests above, and make sure Lean accepts it.) The
-    function should return [true] if either or both of its inputs are
-    [false].
+The command `sorry` can be used as a placeholder for an incomplete proof. We use it in exercises to indicate the parts that we're leaving for you - i.e., your job is to replace `sorry`s with real proofs.
 
-    Hint: if [simpl] will not simplify the goal in your proof, it's
-    probably because you defined [nandb] without using a [match]
-    expression. Try a different definition of [nandb], or just
-    skip over [simpl] and go directly to [reflexivity]. We'll
-    explain this phenomenon later in the chapter. *)
+Remove "`sorry`." and complete the definition of the following function; then make sure that the `example` assertions below can each be verified by Lean. (I.e., fill in each proof, following the model of the `orb` tests above, and make sure Lean accepts it.) The function should return `true` if either or both of its inputs are `false`.
 
-Definition nandb (b1:bool) (b2:bool) : bool
-:= negb (andb b1 b2).
+Hint: if `simp` will not simplify the goal in your proof, it's probably because you defined `nandb` without using a `match` expression. Try a different definition of `nandb`, or just skip over `simp` and go directly to `rfl`. We'll explain this phenomenon later in the chapter.
+-/
+namespace Local
 
-Example test_nandb1:               (nandb true false) = true.
-Proof. reflexivity. Qed.
-Example test_nandb2:               (nandb false false) = true.
-Proof. exact eq_refl. Qed.
-Example test_nandb3:               (nandb false true) = true.
-exact eq_refl. Qed.
-Example test_nandb4:               (nandb true true) = false.
-Proof eq_refl.
-(** [] *)
+namespace Bool
 
-(** **** Exercise: 1 star, standard (andb3)
+def nandb (b₁ b₂: Bool): Bool := negb (andb b₁ b₂)
 
-    Do the same for the [andb3] function below. This function should
-    return [true] when all of its inputs are [true], and [false]
-    otherwise. *)
+example: (nandb true  false) = true  := rfl
+example: (nandb false false) = true  := rfl
+example: (nandb false true ) = true  := rfl
+example: (nandb true  true ) = false := rfl
+-- (** [] *)
 
-Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool
-:= andb (andb b1 b2) b3.
+/-!
+#### Exercise: 1 star, standard (andb3)
 
-Example test_andb31:                 (andb3 true true true) = true.
-Proof eq_refl.
-Example test_andb32:                 (andb3 false true true) = false.
-Proof eq_refl.
-Example test_andb33:                 (andb3 true false true) = false.
-Proof eq_refl.
-Example test_andb34:                 (andb3 true true false) = false.
-Proof eq_refl.
-(** [] *)
+Do the same for the `andb3` function below. This function should return `true` when all of its inputs are `true`, and `false` otherwise.
+-/
 
-(* ================================================================= *)
-(** ** Types *)
+def andb3 (b₁ b₂ b₃: Bool): Bool := andb (andb b₁ b₂) b₃
 
-(** Every expression in Lean has a type, describing what sort of
-    thing it computes. The [Check] command asks Lean to print the type
-    of an expression. *)
+example: (andb3 true  true  true ) = true  := rfl
+example: (andb3 false true  true ) = false := rfl
+example: (andb3 true  false true ) = false := rfl
+example: (andb3 true  true  false) = false := rfl
+-- (** [] *)
 
-Check true.
-(* ===> true : bool *)
+/-!
+### Types
 
-(** If the expression after [Check] is followed by a colon and a type,
-    Lean will verify that the type of the expression matches the given
-    type and halt with an error if not. *)
+Every expression in Lean has a type, describing what sort of thing it computes. The `#check` command asks Lean to print the type of an expression.
+-/
 
-Check true
-  : bool.
-Check (negb true)
-  : bool.
+#check true
 
-(** Functions like [negb] itself are also data values, just like
-    [true] and [false].  Their types are called _function types_, and
-    they are written with arrows. *)
+/-!
+If the expression after `#check` is followed by a colon and a type, Lean will verify that the type of the expression matches the given type and halt with an error if not.
+-/
 
-Check negb
-  : bool -> bool.
+#check (true: Bool)
+#check (negb true: Bool)
 
-(** The type of [negb], written [bool -> bool] and pronounced
-    "[bool] arrow [bool]," can be read, "Given an input of type
-    [bool], this function produces an output of type [bool]."
-    Similarly, the type of [andb], written [bool -> bool -> bool], can
-    be read, "Given two inputs, each of type [bool], this function
-    produces an output of type [bool]." *)
+/-!
+Functions like `negb` itself are also data values, just like `true` and `false`. Their types are called _function types_, and they are written with arrows.
+-/
 
-(* ================================================================= *)
-(** ** New Types from Old *)
+#check (negb: Bool → Bool)
 
-(** The types we have defined so far are examples of "enumerated
-    types": their definitions explicitly enumerate a finite set of
-    elements, called _constructors_.  Here is a more interesting type
-    definition, where one of the constructors takes an argument: *)
+end Bool
 
-Inductive rgb : Type :=
+end Local
+
+/-!
+The type of `negb`, written `Bool → Bool` and pronounced "`Bool` arrow `Bool`," can be read, "Given an input of type `Bool`, this function produces an output of type `Bool`." Similarly, the type of `andb`, written `Bool → Bool → Bool`, can be read, "Given two inputs, each of type `Bool`, this function produces an output of type `Bool`."
+
+### New Types from Old
+
+The types we have defined so far are examples of "enumerated types": their definitions explicitly enumerate a finite set of elements, called _constructors_. Here is a more interesting type definition, where one of the constructors takes an argument:
+-/
+
+inductive RGB
   | red
   | green
-  | blue.
+  | blue
 
-Inductive color : Type :=
+inductive Color
   | black
   | white
-  | primary (p : rgb).
+  | primary (p: RGB)
 
-(** Let's look at this in a little more detail.
+/-!
+Let's look at this in a little more detail. An `inductive` definition does two things:
+- It defines a set of new _constructors_. E.g., `red`, `primary`, `true`, `false`, `monday`, etc. are constructors.
+- It groups them into a new named type, like `Bool`, `RGB`, or `Color`.
 
-    An [Inductive] definition does two things:
+_Constructor expressions_ are formed by applying a constructor to zero or more other constructors or constructor expressions, obeying the declared number and types of the constructor arguments.
+E.g.,
+- `red`
+- `true`
+- `primary red`
+- etc.
+But not
+- `red primary`
+- `true red`
+- `primary (primary red)`
+- etc.
 
-    - It defines a set of new _constructors_. E.g., [red],
-      [primary], [true], [false], [monday], etc. are constructors.
+In particular, the definitions of `RGB` and `Color` say which constructor expressions belong to the sets `RGB` and `Color`:
+- `red`, `green`, and `blue` belong to the set `RGB`;
+- `black` and `white` belong to the set `Color`;
+- if `p` is a constructor expression belonging to the set `RGB`, then `primary p` (pronounced "the constructor `primary` applied to the argument `p`") is a constructor expression belonging to the set `Color`; and
+- constructor expressions formed in these ways are the _only_ ones belonging to the sets `RGB` and `Color`.
 
-    - It groups them into a new named type, like [bool], [rgb], or
-      [color].
+We can define functions on colors using pattern matching just as we did for `Day` and `Bool`.
+-/
 
-    _Constructor expressions_ are formed by applying a constructor
-    to zero or more other constructors or constructor expressions,
-    obeying the declared number and types of the constructor arguments.
-    E.g.,
-        - [red]
-        - [true]
-        - [primary red]
-        - etc.
-    But not
-        - [red primary]
-        - [true red]
-        - [primary (primary red)]
-        - etc.
-*)
-
-(** In particular, the definitions of [rgb] and [color] say
-    which constructor expressions belong to the sets [rgb] and
-    [color]:
-
-    - [red], [green], and [blue] belong to the set [rgb];
-    - [black] and [white] belong to the set [color];
-    - if [p] is a constructor expression belonging to the set [rgb],
-      then [primary p] (pronounced "the constructor [primary] applied
-      to the argument [p]") is a constructor expression belonging to
-      the set [color]; and
-    - constructor expressions formed in these ways are the _only_ ones
-      belonging to the sets [rgb] and [color]. *)
-
-(** We can define functions on colors using pattern matching just as
-    we did for [day] and [bool]. *)
-
-Definition monochrome (c : color) : bool :=
+def monochrome (c: Color): Bool :=
   match c with
-  | black => true
-  | white => true
-  | primary p => false
-  end.
+  | .black => true
+  | .white => true
+  | .primary p => false
 
-(** Since the [primary] constructor takes an argument, a pattern
-    matching [primary] should include either a variable (as above --
-    note that we can choose its name freely) or a constant of
-    appropriate type (as below). *)
+/-!
+Since the `primary` constructor takes an argument, a pattern matching `primary` should include either a variable (as above -- note that we can choose its name freely) or a constant of appropriate type (as below).
+-/
 
-Definition isred (c : color) : bool :=
+def isred (c: Color): Bool :=
   match c with
-  | black => false
-  | white => false
-  | primary red => true
-  | primary _ => false
-  end.
+  | .black => false
+  | .white => false
+  | .primary .red => true
+  | .primary _ => false
 
-(** The pattern "[primary _]" here is shorthand for "the constructor
-    [primary] applied to any [rgb] constructor except [red]."  (The
-    wildcard pattern [_] has the same effect as the dummy pattern
-    variable [p] in the definition of [monochrome].) *)
+/-!
+The following are equivalent definitions of `isread`.
 
-(* ================================================================= *)
-(** ** Modules *)
+First of all, we don't have to name the parameter `c`, and we can replace `(c: Color): Bool := match c with` with just `: Color → Bool`. It's a syntax sugar.
+-/
 
-(** Lean provides a _module system_ to aid in organizing large
-    developments.  We won't need most of its features,
-    but one is useful: If we enclose a collection of declarations
-    between [Module X] and [End X] markers, then, in the remainder of
-    the file after the [End], these definitions are referred to by
-    names like [X.foo] instead of just [foo].  We will use this
-    feature to limit the scope of definitions, so that we are free to
-    reuse names. *)
+example: Color → Bool
+  | .black => false
+  | .white => false
+  | .primary .red => true
+  | .primary _ => false
 
-Module Playground.
-  Definition b : rgb := blue.
-End Playground.
+/-!
+Furthermore, adjacent matchers with identical bodies can be deduplicated like this: 
+-/
+example: Color → Bool
+  | .black
+  | .white => false
+  | .primary .red => true
+  | .primary _ => false
 
-Definition b : bool := true.
+/-!
+Line breaks between matchers (`|`) are optional.
+-/
+example: Color → Bool
+  | .black | .white => false
+  | .primary .red => true
+  | .primary _ => false
 
-Check Playground.b : rgb.
-Check b : bool.
+/-!
+One can also reorder matchers. Note that if you move the matcher `Color.primary _` before `Color.primary RGB.red`, you will make the latter matcher redundant, as the wildcard (`_`) matches all; in this case, Lean will warn you about the redundancy. This prevents you from accidentally changing the semantics of the definition.
+-/
+example: Color → Bool
+  | .primary .red => true
+  | .black | .white | .primary _ => false
 
-(* ================================================================= *)
-(** ** Tuples *)
+/-!
+Furthermore, we can match the first parameter of type `Color` with a wildcard too.
+-/
+example: Color → Bool
+  | .primary .red => true
+  | _ => false
 
-Module TuplePlayground.
+example: Color → Bool | .primary .red => true | _ => false
 
-(** A single constructor with multiple parameters can be used
-    to create a tuple type. As an example, consider representing
-    the four bits in a nybble (half a byte). We first define
-    a datatype [bit] that resembles [bool] (using the
-    constructors [B0] and [B1] for the two possible bit values)
-    and then define the datatype [nybble], which is essentially
-    a tuple of four bits. *)
+example (c: Color): Bool := if let .primary .red := c then true else false
 
-Inductive bit : Type :=
-  | B0
-  | B1.
+/-!
+The pattern "`primary _`" here is shorthand for "the constructor `primary` applied to any `RGB` constructor except `red`." (The wildcard pattern `_` has the same effect as the dummy pattern variable `p` in the definition of `monochrome`.)
 
-Inductive nybble : Type :=
-  | bits (b0 b1 b2 b3 : bit).
+### Modules
 
-Check (bits B1 B0 B1 B0)
-  : nybble.
+Lean provides a _module system_ to aid in organizing large developments. We won't need most of its features, but one is useful: If we enclose a collection of declarations between `namespace X` and `end X` markers, then, in the remainder of the file after the `end`, these definitions are referred to by names like `X.foo` instead of just `foo.  We will use this feature to limit the scope of definitions, so that we are free to reuse names.
+-/
 
-(** The [bits] constructor acts as a wrapper for its contents.
-    Unwrapping can be done by pattern-matching, as in the [all_zero]
-    function which tests a nybble to see if all its bits are [B0].  We
-    use underscore (_) as a _wildcard pattern_ to avoid inventing
-    variable names that will not be used. *)
+namespace Playground
+  def b: RGB := .blue
+end Playground
 
-Definition all_zero (nb : nybble) : bool :=
+def b: Bool := true
+
+#check (Playground.b: RGB)
+#check (b: Bool)
+
+/-!
+### Tuples
+-/
+
+namespace TuplePlayground
+
+/-!
+A single constructor with multiple parameters can be used to create a tuple type. As an example, consider representing the four bits in a nybble (half a byte). We first define a datatype `Bit` that resembles `Bool` (using the constructors `B₀` and `B₁` for the two possible bit values) and then define the datatype `Nybble`, which is essentially a tuple of four bits.
+-/
+
+inductive Bit
+  | B₀
+  | B₁
+
+inductive Nybble
+  | bits (b₀ b₁ b₂ b₃: Bit)
+
+#check (.bits .B₁ .B₀ .B₁ .B₀: Nybble)
+
+/-!
+The `bits` constructor acts as a wrapper for its contents. Unwrapping can be done by pattern-matching, as in the `all_zero` function which tests a nybble to see if all its bits are `B₀`. We use underscore (`_`) as a _wildcard pattern_ to avoid inventing variable names that will not be used.
+-/
+
+def all_zero (nb: Nybble): Bool :=
   match nb with
-  | (bits B0 B0 B0 B0) => true
-  | (bits _ _ _ _) => false
-  end.
+  | .bits .B₀ .B₀ .B₀ .B₀ => true
+  | _ => false
 
-Compute (all_zero (bits B1 B0 B1 B0)).
-(* ===> false : bool *)
-Compute (all_zero (bits B0 B0 B0 B0)).
-(* ===> true : bool *)
+example: Nybble → Bool
+  | ⟨.B₀, .B₀, .B₀, .B₀⟩ => true
+  | _ => false
 
-End TuplePlayground.
+local instance: OfNat Bit 0 where
+  ofNat := .B₀
 
+local instance: OfNat Bit 1 where
+  ofNat := .B₁
+
+example: Nybble → Bool
+  | ⟨0, 0, 0, 0⟩ => true
+  | _ => false
+
+example (nb: Nybble): Bool :=
+  if let ⟨0, 0, 0, 0⟩ := nb then true else false
+
+#eval (all_zero (.bits .B₁ .B₀ .B₁ .B₀))
+#eval (all_zero ⟨1, 0, 1, 0⟩)
+#eval (all_zero (.bits .B₀ .B₀ .B₀ .B₀))
+#eval (all_zero ⟨0, 0, 0, 0⟩)
+
+end TuplePlayground
+
+/-
 (* ================================================================= *)
 (** ** Numbers *)
 
@@ -765,48 +719,43 @@ Check ((0 + 1) + 1) : nat.
     [eq]uality, yielding a [b]oolean.  Note the use of nested
     [match]es (we could also have used a simultaneous match, as we did
     in [minus].) *)
+-/
 
-Fixpoint eqb (n m : nat) : bool :=
+def Nat.eqb (n m: Nat): Bool :=
   match n with
-  | O => match m with
-         | O => true
-         | S m' => false
-         end
-  | S n' => match m with
-            | O => false
-            | S m' => eqb n' m'
-            end
-  end.
+  | 0 => match m with
+         | 0 => true
+         | succ m' => false
+  | succ n' => match m with
+               | 0 => false
+               | succ m' => eqb n' m'
 
-(** Similarly, the [leb] function tests whether its first argument is
-    less than or equal to its second argument, yielding a boolean. *)
+/-!
+Similarly, the `leb` function tests whether its first argument is less than or equal to its second argument, yielding a boolean.
+-/
 
-Fixpoint leb (n m : nat) : bool :=
+def Nat.leb (n m: Nat): Bool :=
   match n with
-  | O => true
-  | S n' =>
+  | 0 => true
+  | succ n' =>
       match m with
-      | O => false
-      | S m' => leb n' m'
-      end
-  end.
+      | 0 => false
+      | succ m' => leb n' m'
 
-Example test_leb1:                leb 2 2 = true.
-Proof. simpl. reflexivity.  Qed.
-Example test_leb2:                leb 2 4 = true.
-Proof. simpl. reflexivity.  Qed.
-Example test_leb3:                leb 4 2 = false.
-Proof. simpl. reflexivity.  Qed.
+example: Nat.leb 2 2 = true  := rfl
+example: Nat.leb 2 4 = true  := rfl
+example: Nat.leb 4 2 = false := rfl
 
-(** We'll be using these (especially [eqb]) a lot, so let's give
-    them infix notations. *)
+/-!
+We'll be using these (especially `eqb`) a lot, so let's give them infix notations.
+-/
 
-Notation "x =? y" := (eqb x y) (at level 70) : nat_scope.
-Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
+infix:50 " =? " => Nat.eqb
+infix:50 " ≤? " => Nat.leb
 
-Example test_leb3': (4 <=? 2) = false.
-Proof. simpl. reflexivity.  Qed.
+example: (4 ≤? 2) = false := rfl
 
+/-
 (** We now have two symbols that look like equality: [=] and
     [=?].  We'll have much more to say about the differences and
     similarities between them later. For now, the main thing to notice
@@ -1445,152 +1394,90 @@ Proof.
 Qed.
 
 (** [] *)
+-/
 
-(** **** Exercise: 3 stars, standard (binary)
+/-!
+#### Exercise: 3 stars, standard (binary)
 
-    We can generalize our unary representation of natural numbers to
-    the more efficient binary representation by treating a binary
-    number as a sequence of constructors [B0] and [B1] (representing 0s
-    and 1s), terminated by a [Z]. For comparison, in the unary
-    representation, a number is a sequence of [S] constructors terminated
-    by an [O].
+We can generalize our unary representation of natural numbers to the more efficient binary representation by treating a binary number as a sequence of constructors `B₀` and `B₁` (representing 0s and 1s), terminated by a `Z`. For comparison, in the unary representation, a number is a sequence of `S` constructors terminated by an `O`.
 
     For example:
 
         decimal               binary                          unary
            0                       Z                              O
-           1                    B1 Z                            S O
-           2                B0 (B1 Z)                        S (S O)
-           3                B1 (B1 Z)                     S (S (S O))
-           4            B0 (B0 (B1 Z))                 S (S (S (S O)))
-           5            B1 (B0 (B1 Z))              S (S (S (S (S O))))
-           6            B0 (B1 (B1 Z))           S (S (S (S (S (S O)))))
-           7            B1 (B1 (B1 Z))        S (S (S (S (S (S (S O))))))
-           8        B0 (B0 (B0 (B1 Z)))    S (S (S (S (S (S (S (S O)))))))
+           1                    B₁ Z                            S O
+           2                B₀ (B₁ Z)                        S (S O)
+           3                B₁ (B₁ Z)                     S (S (S O))
+           4            B₀ (B₀ (B₁ Z))                 S (S (S (S O)))
+           5            B₁ (B₀ (B₁ Z))              S (S (S (S (S O))))
+           6            B₀ (B₁ (B₁ Z))           S (S (S (S (S (S O)))))
+           7            B₁ (B₁ (B₁ Z))        S (S (S (S (S (S (S O))))))
+           8        B₀ (B₀ (B₀ (B₁ Z)))    S (S (S (S (S (S (S (S O)))))))
 
-    Note that the low-order bit is on the left and the high-order bit
-    is on the right - the opposite of the way binary numbers are
-    usually written.  This choice makes them easier to manipulate. *)
-
-Inductive bin : Type :=
-  | Z
-  | B0 (n : bin)
-  | B1 (n : bin).
-
-(** Complete the definitions below of an increment function [incr]
-    for binary numbers, and a function [bin_to_nat] to convert
-    binary numbers to unary numbers. *)
-
-Fixpoint incr (m:bin) : bin
-:= match m with
-   | Z => B1 Z
-   | B0 n => B1 n
-   | B1 n => B0 (incr n)
-   end.
-
-Fixpoint bin_to_nat (m:bin) : nat
-:= match m with
-   | Z => 0
-   | B0 n => (bin_to_nat n) * 2
-   | B1 n => S ((bin_to_nat n) * 2)
-   end.
-
-(** The following "unit tests" of your increment and binary-to-unary
-    functions should pass after you have defined those functions correctly.
-    Of course, unit tests don't fully demonstrate the correctness of
-    your functions!  We'll return to that thought at the end of the
-    next chapter. *)
-
-Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
-Proof eq_refl.
-
-Example test_bin_incr2 : (incr (B0 (B1 Z))) = B1 (B1 Z).
-Proof eq_refl.
-
-Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
-Proof eq_refl.
-
-Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
-Proof eq_refl.
-
-Example test_bin_incr5 :
-        bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
-Proof eq_refl.
-
-Example test_bin_incr6 :
-        bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
-Proof eq_refl.
-
-(** [] *)
-
-(* ################################################################# *)
-(** * Testing Your Solutions *)
-
-(** Each SF chapter comes with a test file containing scripts that
-    check whether you have solved the required exercises. If you're
-    using SF as part of a course, your instructors will likely be
-    running these test files to autograde your solutions. You can also
-    use these test files, if you like, to make sure you haven't missed
-    anything.
-
-    Important: This step is _optional_: if you've completed all the
-    non-optional exercises and Lean accepts your answers, this already
-    shows that you are in good shape.
-
-    The test file for this chapter is [BasicsTest.v]. To run it, make
-    sure you have saved [Basics.v] to disk.  Then do this:
-
-       coqc -Q . LF Basics.v
-       coqc -Q . LF BasicsTest.v
-
-    (Make sure you do this in a directory that also contains a file named
-    [_CoqProject] containing the single line [-Q . LF].)
-
-    If you accidentally deleted an exercise or changed its name, then
-    [make BasicsTest.vo] will fail with an error that tells you the
-    name of the missing exercise.  Otherwise, you will get a lot of
-    useful output:
-
-    - First will be all the output produced by [Basics.v] itself.  At
-      the end of that you will see [COQC BasicsTest.v].
-
-    - Second, for each required exercise, there is a report that tells
-      you its point value (the number of stars or some fraction
-      thereof if there are multiple parts to the exercise), whether
-      its type is ok, and what assumptions it relies upon.
-
-      If the _type_ is not [ok], it means you proved the wrong thing:
-      most likely, you accidentally modified the theorem statement
-      while you were proving it.  The autograder won't give you any
-      points for that, so make sure to correct the theorem.
-
-      The _assumptions_ are any unproved theorems which your solution
-      relies upon.  "Closed under the global context" is a fancy way
-      of saying "none": you have solved the exercise. (Hooray!)  On
-      the other hand, a list of axioms means you haven't fully solved
-      the exercise. (But see below regarding "Allowed Axioms.") If the
-      exercise name itself is in the list, that means you haven't
-      solved it; probably you have [Admitted] it.
-
-    - Third, you will see the maximum number of points in standard and
-      advanced versions of the assignment.  That number is based on
-      the number of stars in the non-optional exercises.
-
-    - Fourth, you will see a list of "Allowed Axioms".  These are
-      unproved theorems that your solution is permitted to depend
-      upon.  You'll probably see something about
-      [functional_extensionality] for this chapter; we'll cover what
-      that means in a later chapter.
-
-    - Finally, you will see a summary of whether you have solved each
-      exercise.  Note that summary does not include the critical
-      information of whether the type is ok (that is, whether you
-      accidentally changed the theorem statement): you have to look
-      above for that information.
-
-    Exercises that are manually graded will also show up in the
-    output.  But since they have to be graded by a human, the test
-    script won't be able to tell you much about them.  *)
-
-(* 2022-08-08 17:13 *)
+Note that the low-order bit is on the left and the high-order bit is on the right - the opposite of the way binary numbers are usually written.  This choice makes them easier to manipulate.
 -/
+
+inductive Bin
+  | Z
+  | B₀ (n: Bin)
+  | B₁ (n: Bin)
+
+namespace Bin
+
+/-!
+Complete the definitions below of an increment function `succ` for binary numbers, and a function `toNat` to convert binary numbers to unary numbers.
+-/
+
+def succ: Bin → Bin
+  | Z => B₁ Z
+  | B₀ n => B₁ n
+  | B₁ n => B₀ n.succ
+
+def toNat: Bin → Nat
+  | Z => 0
+  | B₀ n => n.toNat * 2
+  | B₁ n => (n.toNat * 2).succ
+
+/-!
+The following "unit tests" of your increment and binary-to-unary functions should pass after you have defined those functions correctly. Of course, unit tests don't fully demonstrate the correctness of your functions! We'll return to that thought at the end of the next chapter.
+-/
+
+example: (succ (B₁ Z)) = B₀ (B₁ Z) := rfl
+example: (succ (B₀ (B₁ Z))) = B₁ (B₁ Z) := rfl
+example: (succ (B₁ (B₁ Z))) = B₀ (B₀ (B₁ Z)) := rfl
+example: toNat (B₀ (B₁ Z)) = 2 := rfl
+example: toNat (succ (B₁ Z)) = 1 + toNat (B₁ Z) := rfl
+example: toNat (succ (succ (B₁ Z))) = 2 + toNat (B₁ Z) := rfl
+
+end Bin
+-- (** [] *)
+
+/-!
+## Testing Your Solutions
+
+Each SF chapter comes with a test file containing scripts that check whether you have solved the required exercises. If you're using SF as part of a course, your instructors will likely be running these test files to autograde your solutions. You can also use these test files, if you like, to make sure you haven't missed anything.
+
+Important: This step is _optional_: if you've completed all the non-optional exercises and Lean accepts your answers, this already shows that you are in good shape.
+
+The test file for this chapter is `BasicsTest.lean`. To run it, make sure you have saved `Basics.lean` to disk. Then do this:
+```sh
+coqc -Q . LF Basics.v
+coqc -Q . LF BasicsTest.v
+```
+
+(Make sure you do this in a directory that also contains a file name `_CoqProject` containing the single line `-Q . LF`.)
+
+If you accidentally deleted an exercise or changed its name, then `make BasicsTest.olean` will fail with an error that tells you the name of the missing exercise. Otherwise, you will get a lot of useful output:
+- First will be all the output produced by `Basics.lean` itself. At the end of that you will see `COQC BasicsTest.lean`.
+- Second, for each required exercise, there is a report that tells you its point value (the number of stars or some fraction thereof if there are multiple parts to the exercise), whether its type is ok, and what assumptions it relies upon.
+  If the _type_ is not `ok`, it means you proved the wrong thing: most likely, you accidentally modified the theorem statement while you were proving it.  The autograder won't give you any points for that, so make sure to correct the theorem.
+
+  The _assumptions_ are any unproved theorems which your solution relies upon.  "Closed under the global context" is a fancy way of saying "none": you have solved the exercise. (Hooray!) On the other hand, a list of axioms means you haven't fully solved the exercise. (But see below regarding "Allowed Axioms.") If the exercise name itself is in the list, that means you haven't solved it; probably you have `sorry` it.
+- Third, you will see the maximum number of points in standard and advanced versions of the assignment. That number is based on the number of stars in the non-optional exercises.
+- Fourth, you will see a list of "Allowed Axioms". These are unproved theorems that your solution is permitted to depend upon. You'll probably see something about `functional_extensionality` for this chapter; we'll cover what that means in a later chapter.
+- Finally, you will see a summary of whether you have solved each exercise.  Note that summary does not include the critical information of whether the type is ok (that is, whether you accidentally changed the theorem statement): you have to look above for that information.
+
+Exercises that are manually graded will also show up in the output. But since they have to be graded by a human, the test script won't be able to tell you much about them.
+-/
+
+-- 2022-08-08 17:13
