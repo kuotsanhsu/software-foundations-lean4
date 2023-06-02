@@ -8,7 +8,9 @@ package «software-foundations» {
   moreLeanArgs := leanArgs
 }
 
+@[default_target]
 lean_lib SoftwareFoundations
+@[default_target]
 lean_lib BibTeX
 
 @[default_target]

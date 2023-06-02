@@ -27,3 +27,37 @@ lake init software-foundations
 # Build and run the target binary `grader`:
 lake exe grader
 ```
+
+## Generating HTML doc
+
+### mdbook and Alect
+
+```sh
+cargo install --git https://github.com/leanprover/mdBook mdbook
+cd lake-packages/leanInk
+lake build
+export PATH=$PWD/build/bin:$PATH
+
+cd ../../SoftwareFoundations
+alectryon --frontend lean4+markup LF/Basics.lean --backend webpage -o Basics.lean.md
+mdbook serve --open
+```
+
+### doc-gen4
+
+Include the dev dependency [doc-gen4](https://github.com/leanprover/doc-gen4) by adding the following code to `lakefile.lean`:
+```lean
+-- Only build given the flag `dev`.
+meta if get_config? env = some "dev" then
+require «doc-gen4» from git "https://github.com/leanprover/doc-gen4" @ "main"
+```
+
+Update the dependency with lake (much like `npm install`):
+```sh
+lake -Kenv=dev update
+```
+
+Generate documentation for the library `SoftwareFoundations`:
+```sh
+lake -Kenv=dev build SoftwareFoundations:docs
+```

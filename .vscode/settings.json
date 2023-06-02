@@ -22,6 +22,14 @@
 			"source.fixAll": true,
 		}
 	},
+	"[lean4]": {
+		"editor.wordWrap": "wordWrapColumn",
+		"editor.wordWrapColumn": 80,
+		"editor.wrappingIndent": "none",
+		"editor.unicodeHighlight.ambiguousCharacters": false,
+		"editor.tabSize": 2,
+		"editor.wordSeparators": "`~@$%^&*()-=+[{]}⟨⟩⦃⦄⟦⟧⟮⟯‹›\\|;:\",.<>/"
+	},
 	"search.exclude": {
 		"./build": true
 	},
