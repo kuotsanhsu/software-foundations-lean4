@@ -27,3 +27,12 @@ lake init software-foundations
 # Build and run the target binary `grader`:
 lake exe grader
 ```
+
+## Tacics
+
+- https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Tactic/Basic.lean
+- https://github.com/leanprover/lean4/blob/451ccec1547591802847b4512b000f51f84ca43c/tests/lean/run/lemma.lean#L1
+
+## Extra Bibliography
+- [The Hoare State Monad](https://leanprover-community.github.io/archive/stream/270676-lean4/topic/Applying.20post.20invariant.20to.20Hoare.20State.20Monad.html)
+- https://news.ycombinator.com/item?id=22137601
