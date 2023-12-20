@@ -38,5 +38,10 @@
 	},
 	"files.watcherExclude": {
 		"./build": true
+	},
+	"[json][jsonc][markdown]": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll": "explicit"
+		}
 	}
 }
