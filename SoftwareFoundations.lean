@@ -1,3 +1,4 @@
+import SoftwareFoundations.LogicalFoundations
 import BibTeX
 
 /-- https://softwarefoundations.cis.upenn.edu/lf-current/Preface.html#lab12 -/
