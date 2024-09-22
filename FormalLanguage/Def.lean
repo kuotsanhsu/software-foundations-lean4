@@ -8,9 +8,10 @@ inductive RegExp.{u} (α: Type u)
   /-- Empty string matcher. -/
   | ε
   | protected single (a: α)
-  | protected append (r₁ r₂: RegExp α)
-  | protected union (r₁ r₂: RegExp α)
-  | protected star (r: RegExp α)
+  | protected append (r₁ r₂: RegExp α) -- "ab"
+  | protected union (r₁ r₂: RegExp α) -- "x(a|b)y"
+  -- append x (append (union a b) y)
+  | protected star (r: RegExp α) -- "x*": ""
 
 export RegExp (ε)
 
@@ -43,12 +44,12 @@ instance: Append (RegExp α) where
 @[default_instance, match_pattern] instance: Union (RegExp α) where
   union := .union
 
-/-- Write `r*` for `RegExp.star r`. This postfix operator `*` binds tighter 
+/-- Write `r*` for `RegExp.star r`. This postfix operator `*` binds tighter
 than function application. -/
 instance: Star (RegExp α) where
   star := .star
 
-/-- Constructs a regular expression that matches exactly the string that it 
+/-- Constructs a regular expression that matches exactly the string that it
 receives as an argument. -/
 def fromStr: List α → RegExp α
   | [] => ε
@@ -58,10 +59,10 @@ instance: Coe (List α) (RegExp α) where
   coe := fromStr
 #check_failure ([]: RegExp α) -- FIXME
 
-/-- Denoted by the Haskell operator `=~` to avoid overloading `∈` as done in 
-theoretical computer science; really, `∈` is way too overloaded in math. We 
-depart slightly from standard practice in that we do not require the type `α` 
-to be finite. This results in a somewhat different theory of regular 
+/-- Denoted by the Haskell operator `=~` to avoid overloading `∈` as done in
+theoretical computer science; really, `∈` is way too overloaded in math. We
+depart slightly from standard practice in that we do not require the type `α`
+to be finite. This results in a somewhat different theory of regular
 expressions, but the difference doesn't concern us here. -/
 inductive accept: List α → RegExp α → Prop
   | empty: accept [] ε
@@ -78,3 +79,6 @@ export accept (empty single append unionL unionR starEmpty starAppend)
 @[inherit_doc] infix:50 " =~ " => accept
 
 end RegExp
+
+-- Lean4, Coq (OCaml), Agda (Haskell)
+-- Dependent type

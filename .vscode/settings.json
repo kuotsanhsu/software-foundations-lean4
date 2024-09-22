@@ -9,7 +9,7 @@
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true,
 		"editor.codeActionsOnSave": {
-			"source.fixAll": true,
+			"source.fixAll": "explicit"
 		}
 	},
 	"[markdown]": {
@@ -22,7 +22,7 @@
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true,
 		"editor.codeActionsOnSave": {
-			"source.fixAll": true,
+			"source.fixAll": "explicit"
 		}
 	},
 	"[json][jsonc]": {
@@ -32,7 +32,7 @@
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true,
 		"editor.codeActionsOnSave": {
-			"source.fixAll": true,
+			"source.fixAll": "explicit"
 		}
 	},
 	"search.exclude": {
@@ -43,5 +43,10 @@
 	},
 	"files.watcherExclude": {
 		"./build": true
+	},
+	"[json][jsonc][lean][lean4][markdown]": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll": "explicit"
+		}
 	}
 }
